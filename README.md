@@ -16,3 +16,23 @@ Use [controller-iotwebconf.ino](https://github.com/shmick/Espresso-PID-Controlle
 #### ADS1115 15bit ADC to provide better temperature resolution
 #### Inexpensive (~ $15) Solid State Relay from eBay/Amazon
 #### I2C 128x64 OLED display from eBay/Amazon 
+
+
+===================================================
+
+# Changed
+## Parts used for the prototyping
+![Breadboard setup](./controller-max6675.ino/2020-02-27 21.17.22.jpg)
+1. Wemos D1 Mini
+1. K Type thermocouple with M4 threads
+1. I2C 128x64 OLED SSD1306 display
+1. Max6675 Temperature Sensor Module
+1. 10k ohm resistor 4 pcs
+1. 0.1mF capacitor 2 pcs
+1. Buttons 2 pcs
+1. Led 1 pcs
+1. Breadboard
+1. Wires
+
+## Eeschema 
+![Eeschema](./controller-max6675.ino/EeschemaEspressoPID.png)
