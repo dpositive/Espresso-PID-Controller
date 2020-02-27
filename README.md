@@ -36,3 +36,8 @@ Use [controller-iotwebconf.ino](https://github.com/shmick/Espresso-PID-Controlle
 
 ## Eeschema 
 ![Eeschema](./controller-max6675.ino/EeschemaEspressoPID.png)
+
+## PCB
+Download [EspressoPID.zip](./controller-max6675.ino/EspressoPID.zip) file with GBR files in it.
+![Eeschema](./controller-max6675.ino/EspressoPIDpcb.png)
+ 
