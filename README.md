@@ -22,7 +22,7 @@ Use [controller-iotwebconf.ino](https://github.com/shmick/Espresso-PID-Controlle
 
 # Changed
 ## Parts used for the prototyping
-![Breadboard setup](./controller-max6675.ino/2020-02-27 21.17.22.png)
+![Breadboard setup](./controller-max6675.ino/setup.png)
 1. Wemos D1 Mini
 1. K Type thermocouple with M4 threads
 1. I2C 128x64 OLED SSD1306 display
