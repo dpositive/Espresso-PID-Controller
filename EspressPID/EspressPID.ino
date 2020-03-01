@@ -82,7 +82,16 @@ const int maxDisplayMins = 200;
 bool operMode = true;
 
 // Define the PID setpoint
-double Setpoint = 45;
+double Setpoint;
+
+// Define coffee temp
+double coffeeTemp = 95;
+
+// Define steam temp
+double steamTemp = 145;
+
+//name of the heating mode: "Coffee" or "Steam"
+String heatingMode;
 
 // Define the PID tuning Parameters
 //double Kp = 3.5; working ok on 2018-09-14
@@ -167,7 +176,7 @@ uint32_t currentTempMillis;
 uint32_t previousTempMillis = now;
 
 // Server tasks interval
-const int serverInterval = 50;
+const int serverInterval = 200;
 uint32_t currentServerMillis;
 uint32_t previousServerMillis = now;
 
@@ -204,6 +213,35 @@ int max6675val;
 uint32_t prevLoopMillis;
 uint32_t numLoops = 0;
 uint32_t currLoops = 0;
+
+byte key()
+{  
+    int val = analogRead(0); // считываем значение с аналогового входа и записываем в переменную val
+        if (val < 50) return 1; // сверяем переменную, если val меньше 50 возвращаем 1 (первая кнопка)
+        else if (val < 120) return 2; // если val меньше 150 вторая кнопка
+        else return 0;  
+}
+
+
+void setTemp() 
+{
+    
+  int a = key();
+  int sensorValue = analogRead(A0);
+   
+    if (a == 1)
+{
+  Setpoint = steamTemp;
+  heatingMode = "Steam";
+}
+else
+{
+  Setpoint = coffeeTemp;
+  heatingMode = "Coffee";
+}
+}
+
+
 
 
 void keepTime(void)
@@ -298,7 +336,7 @@ void displayOLED(void)
       // BOTTOM HALF = Output + Output Percent
       display.setFont(&FreeSans9pt7b);
       display.setCursor(0, 56);
-      display.print("Coffee");
+      display.print(heatingMode);
 
       display.setFont(&FreeSerifBold18pt7b);
       display.setCursor(60, 60);
@@ -414,7 +452,8 @@ void handleSetvals() {
   String message;
 
   String opmode_val = server.arg("opmode");
-  String sp_val = server.arg("sp");
+  String coffee_val = server.arg("coffeeTemp");
+  String steam_val = server.arg("steamTemp");
 
   if ( opmode_val == "off" ) {
     operMode = false;
@@ -427,14 +466,25 @@ void handleSetvals() {
     message += "\n";
   }
 
-  if ( sp_val != NULL ) {
-    double sp_int = sp_val.toFloat();
-    if ( sp_int <= 105.11 || sp_int > 0.1 ) {
-      Setpoint = sp_int;
-      message += "Setpoint: " + sp_val;
+  if ( coffee_val != NULL ) {
+    double coffee_int = coffee_val.toFloat();
+    if ( coffee_int <= 105.11 || coffee_int > 0.1 ) {
+      coffeeTemp = coffee_int;
+      message += "Coffee temp is: " + coffee_val;
       message += "\n";
     } else {
-      message += "sp: " + String(sp_val) + " is invalid\n";
+      message += "Coffee temp: " + String(coffee_val) + " is invalid\n";
+    }
+  }
+
+   if ( steam_val != NULL ) {
+    double steam_int = steam_val.toFloat();
+    if ( steam_int <= 105.11 || steam_int > 0.1 ) {
+      steamTemp = steam_int;
+      message += "Steam temp is: " + steam_val;
+      message += "\n";
+    } else {
+      message += "Steam temp: " + String(steam_val) + " is invalid\n";
     }
   }
 
@@ -615,6 +665,7 @@ void loop()
 {
   keepTime();
   readTemps();
+  setTemp();
   relayControl();
   trackloop();
 #if OLED_DISPLAY == 1
