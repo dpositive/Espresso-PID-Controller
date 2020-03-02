@@ -12,6 +12,7 @@
   AD8495 Thermocouple Amplifier ( https://www.adafruit.com/product/1778 )
   ADS1115 16-Bit ADC using library from https://github.com/baruch/ADS1115
   Solid State Relay ( Crydom TD1225 )
+  
 */
 
 // Set to 1 if using the Adafruit TC board or similar boards with 1.25v reference
