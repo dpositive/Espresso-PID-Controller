@@ -3,15 +3,12 @@
   Code samples used from the following:
   PID Library: https://github.com/br3ttb/Arduino-PID-Library
   PID Lab: https://www.pdx.edu/nanogroup/sites/www.pdx.edu.nanogroup/files/2013_Arduino%20PID%20Lab_0.pdf
-  Smoothing: https://www.arduino.cc/en/Tutorial/Smoothing
   Arduino <> Wemos D1 Mini pins: https://github.com/esp8266/Arduino/blob/master/variants/d1_mini/pins_arduino.h
-  ESP8266 file uploading https://tttapa.github.io/ESP8266/Chap12%20-%20Uploading%20to%20Server.html
   Hardware:
   Wemos D1 Mini ( https://wiki.wemos.cc/products:d1:d1_mini )
   128 x 64 OLED Display using Adafruit_SSD1306 library
-  AD8495 Thermocouple Amplifier ( https://www.adafruit.com/product/1778 )
-  ADS1115 16-Bit ADC using library from https://github.com/baruch/ADS1115
-  Solid State Relay ( Crydom TD1225 )
+  MAX6675MAX6675
+  Solid State Relay ( DC-AC )
 */
 
 // set to 0 if not using the OLED display
@@ -53,13 +50,13 @@
 // *****************************************
 
 // MQTT config
-const char *ssid =  "D. Positive";  // Имя вайфай точки доступа
-const char *pass =  "Electron78"; // Пароль от точки доступа
+const char *ssid =  "SSID";  // SSID name
+const char *pass =  "password"; // SSID password
 
-const char *mqtt_server = "hawk.rmq.cloudamqp.com"; // Имя сервера MQTT
-const int mqtt_port = 1883; // Порт для подключения к серверу MQTT
-const char *mqtt_user = "xzfqoiud:xzfqoiud"; // Логин от сервер
-const char *mqtt_pass = "AL4vCjaT0bDCn0DwEnSsTQ5RlmQpIdoN"; // Пароль от сервера
+const char *mqtt_server = "Hostname"; //  MQTT Hostname
+const int mqtt_port = 1883; // port MQTT
+const char *mqtt_user = "Username"; // MQTT Username
+const char *mqtt_pass = "Password"; // MQTT Password
 
 #define BUFFER_SIZE 100
 
@@ -184,9 +181,9 @@ int tm=300;
 
 byte key()
 {  
-    int val = analogRead(0); // считываем значение с аналогового входа и записываем в переменную val
-        if (val < 50) return 1; // сверяем переменную, если val меньше 50 возвращаем 1 (первая кнопка)
-        else if (val < 120) return 2; // если val меньше 150 вторая кнопка
+    int val = analogRead(0); // read values from the analog input and store it invo the val variable
+        if (val < 50) return 1;
+        else if (val < 120) return 2;
         else return 0;  
 }
 
@@ -338,26 +335,26 @@ void displaySerial(void)
 
 
 //get data from server
-void callback(const MQTT::Publish& pub)     // Функция получения данных от сервера
+void callback(const MQTT::Publish& pub)     // Get data from the server
 {
-    Serial.print(pub.topic());                // выводим в сериал порт название топика
+    Serial.print(pub.topic());                // print topic name into the serial port
     Serial.print(" => ");
-    Serial.println(pub.payload_string());     // выводим в сериал порт значение полученных данных
+    Serial.println(pub.payload_string());     // print recieved data into the serial port
     
     String payload = pub.payload_string();
     
-    if(String(pub.topic()) == "gaggia/coffeeTemp")    //  проверяем из нужного ли нам топика пришли данные 
+    if(String(pub.topic()) == "gaggia/coffeeTemp")    //  chech topic 
     {
-        double setCoffeeTempVal = payload.toFloat(); //  преобразуем полученные данные в тип Float
+        double setCoffeeTempVal = payload.toFloat(); //  convert payload into Float
         if ( setCoffeeTempVal <= 105.11 || setCoffeeTempVal > 0.1 ) {
       coffeeTemp = setCoffeeTempVal;
       }
     
     }
 
-    if(String(pub.topic()) == "gaggia/steamTemp")    //  проверяем из нужного ли нам топика пришли данные 
+    if(String(pub.topic()) == "gaggia/steamTemp")
     {
-        double setSteamTempVal = payload.toFloat(); //  преобразуем полученные данные в тип Float
+        double setSteamTempVal = payload.toFloat(); 
         if ( setSteamTempVal <= 105.11 || setSteamTempVal > 0.1 ) {
       steamTemp = setSteamTempVal;
       }
@@ -369,12 +366,12 @@ void callback(const MQTT::Publish& pub)     // Функция получения
 //send data to server
 void dataSend()
 {
-    client.publish("gaggia/temp", String(Input)); // отправляем в топик для термодатчика значение температуры
+    client.publish("gaggia/temp", String(Input)); // send data into the topic
     client.publish("gaggia/heatingMode", String(heatingMode));
     //client.publish("gaggia/coffeeTemp", String(coffeeTemp));
     //client.publish("gaggia/steamTemp", String(steamTemp));
     
-        tm = 1000;  // пауза меду отправками значений температуры  коло 3 секунд  
+        tm = 1000;  // make pause for about 2 sec
 }
 
 void wifiConnect(){
