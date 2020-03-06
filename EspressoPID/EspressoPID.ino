@@ -12,22 +12,7 @@
   AD8495 Thermocouple Amplifier ( https://www.adafruit.com/product/1778 )
   ADS1115 16-Bit ADC using library from https://github.com/baruch/ADS1115
   Solid State Relay ( Crydom TD1225 )
-  
 */
-
-// Set to 1 if using the Adafruit TC board or similar boards with 1.25v reference
-#define ADA_TC 1
-
-#if ADA_TC == 1
-const int ADSGAIN = 2;
-const double Vref = 1.2362;
-#else
-const int ADSGAIN = 16;
-const int Vref = 0;
-#endif
-
-// set to true for testing the code on the breadboard setup. This will set the hostname to xespresso
-const bool breadboard = false;
 
 // set to 0 if not using the OLED display
 #define OLED_DISPLAY 1
@@ -47,20 +32,15 @@ const bool breadboard = false;
 // Needed for ESP8266
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <FS.h>   //Include File System Headers
 
-//needed for MQT
+//needed for MQTT
 #include <PubSubClient.h>
 
 
 // Needed for pushing new sketches over WiFi
-#include <ESP8266mDNS.h>
-#include <WiFiUdp.h>
+#include <ESP8266WiFiMulti.h>
 #include <ArduinoOTA.h>
 
-// Needed for IotWebConf https://github.com/prampec/IotWebConf
-#include <DNSServer.h>
-#include <IotWebConf.h>
 
 //Needed for MAX6675
 #include <Thermocouple.h>
@@ -68,12 +48,11 @@ const bool breadboard = false;
 #include <AverageThermocouple.h>
 
 
-
 // *****************************************
 // * Config options that you can customize *
 // *****************************************
 
-// MQT config
+// MQTT config
 const char *ssid =  "D. Positive";  // Имя вайфай точки доступа
 const char *pass =  "Electron78"; // Пароль от точки доступа
 
@@ -398,16 +377,6 @@ void dataSend()
         tm = 1000;  // пауза меду отправками значений температуры  коло 3 секунд  
 }
 
-void revercedataSend()
-{
-    client.publish("gaggia/coffeeTemp", String(coffeeTemp));
-     tm = 1000;
-     
-    client.publish("gaggia/steamTemp", String(steamTemp));
-    
-        tm = 1000;  // пауза меду отправками значений температуры  коло 3 секунд  
-}
-
 void wifiConnect(){
   if (WiFi.status() != WL_CONNECTED) {
         Serial.print("Connecting to ");
@@ -427,7 +396,7 @@ void mqttConnect(){
   if (WiFi.status() == WL_CONNECTED) {
         if (!client.connected()) {
             Serial.println("Connecting to MQTT server");
-            if (client.connect(MQTT::Connect("arduinoClient2")
+            if (client.connect(MQTT::Connect("GaggiaClassic")
                                  .set_auth(mqtt_user, mqtt_pass))) {
                 Serial.println("Connected to MQTT server");
                 client.set_callback(callback);
@@ -446,13 +415,36 @@ void mqttConnect(){
     }
   }
 
+void otaHandle(){
+ArduinoOTA.setHostname("GaggiaClassic");
+
+  ArduinoOTA.onStart([]() {
+    Serial.println("Start");
+  });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+  });
+  ArduinoOTA.begin();
+  //Serial.println("OTA ready");
+  
+  }
 
 void setup()
 {
   Serial.begin(115200); //Start a serial session
   lastMessage = now; // timestamp
 
-  //revercedataSend();
   
   // Set the Relay to output mode and ensure the relay is off
   pinMode(RelayPin, OUTPUT);
@@ -494,8 +486,8 @@ void setup()
 
   SPIFFS.begin();
 
-
-} // end of setup()
+  otaHandle();
+}
 
 
 void loop()
@@ -509,9 +501,10 @@ void loop()
   displayOLED();
 #endif
 if (wifiConnCounter <= 2){
-  wifiConnect();}
+ wifiConnect();}
 
 if (mqttConnCounter <= 2){
-  mqttConnect();}
+ mqttConnect();}
+ ArduinoOTA.handle();
 
 } // End of loop()
