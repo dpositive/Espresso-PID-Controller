@@ -37,32 +37,40 @@
 ## PCB
 Download [EspressoPID.zip](./files/EspressoPID.zip) file with GBR files in it.
 
-PCB design
+###### PCB design
+
 ![PCB](./files/EspressoPIDpcb.png)
 
-PCB board
+###### PCB board
+
 ![PCBboard](./files/pcbBoard.png)
 
-PCB board with SSR installed
+###### PCB board with SSR installed
+
 ![PCBboardInstalled](./files/pcbBoardInstalled.png)
 
-Wiring diagram
+###### Wiring diagram
+
 ![Wiring](./files/single_ssr_120v.png)
 
-Everything is connected
+###### Everything is connected
+
 ![Gaggia3](./files/Gaggia3.png)
 
 
 ## Final result
 
-MQTT control pane
+###### MQTT control pane
+
 ![GaggiaControl](./files/gaggiaControl.png)
 
-Display housing (will be reprinted with black colour plastic)
+###### Display housing (will be reprinted with black colour plastic)
+
 ![Gaggia4](./files/Gaggia4.png)
 ![Gaggia2](./files/Gaggia2.png)
 
-Upgraded coffee mashine
+###### Upgraded coffee mashine
+
 ![Gaggia1](./files/Gaggia1.png)
 
 Download [3dFiles.zip](./files/3dFiles.zip) STL files to print OLED housing .
