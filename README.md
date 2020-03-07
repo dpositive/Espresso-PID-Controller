@@ -55,7 +55,7 @@ Download [EspressoPID.zip](./files/EspressoPID.zip) file with GBR files in it.
 
 ###### Everything is connected
 
-![Gaggia3](./files/Gaggia3.png)
+![Gaggia3](./files/gaggiawiring.png)
 
 
 ## Final result
@@ -66,12 +66,12 @@ Download [EspressoPID.zip](./files/EspressoPID.zip) file with GBR files in it.
 
 ###### Display housing (will be reprinted with black colour plastic)
 
-![Gaggia4](./files/Gaggia4.png)
-![Gaggia2](./files/Gaggia2.png)
+![Gaggia4](./files/gaggiascreenfront.png)
+![Gaggia2](./files/gaggiascreenside.png)
 
 ###### Upgraded coffee mashine
 
-![Gaggia1](./files/Gaggia1.png)
+![Gaggia1](./files/Gaggia.png)
 
 
 Download [3dFiles.zip](./files/3dFiles.zip) STL files to print OLED housing .
