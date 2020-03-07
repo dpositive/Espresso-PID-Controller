@@ -73,5 +73,6 @@ Download [EspressoPID.zip](./files/EspressoPID.zip) file with GBR files in it.
 
 ![Gaggia1](./files/Gaggia1.png)
 
+
 Download [3dFiles.zip](./files/3dFiles.zip) STL files to print OLED housing .
  
